@@ -33,7 +33,26 @@ Public Class Form1
     End Sub
 
     Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-
+        Try
+            conn.Open()
+            query = "INSERT INTO RONSTORE (PRODUCTID, PRODUCTNAME, PRODUCTPRICE, PRODUCTSTOCK) VALUES (@PRODUCTID, @PRODUCTNAME, @PRODUCTPRICE, @PRODUCTSTOCK)"
+            cmd = New SqlCommand(query, conn)
+            cmd.Parameters.AddWithValue("@PRODUCTID", TextBox1.Text)
+            cmd.Parameters.AddWithValue("@PRODUCTNAME", TextBox2.Text)
+            cmd.Parameters.AddWithValue("@PRODUCTPRICE", TextBox3.Text)
+            cmd.Parameters.AddWithValue("@PRODUCTSTOCK", TextBox4.Text)
+            Dim result As Integer = cmd.ExecuteNonQuery()
+            If result > 0 Then
+                MessageBox.Show("Product inserted successfully.")
+                dataLoad()
+            Else
+                MessageBox.Show("Insert failed.")
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error: " & ex.Message)
+        Finally
+            conn.Close()
+        End Try
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
