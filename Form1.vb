@@ -56,7 +56,26 @@ Public Class Form1
     End Sub
 
     Private Sub Button2_Click(sender As Object, e As EventArgs) Handles Button2.Click
-
+        Try
+            conn.Open()
+            query = "UPDATE RONSTORE SET PRODUCTNAME = @PRODUCTNAME, PRODUCTPRICE = @PRODUCTPRICE, PRODUCTSTOCK = @PRODUCTSTOCK WHERE PRODUCTID = @PRODUCTID"
+            cmd = New SqlCommand(query, conn)
+            cmd.Parameters.AddWithValue("@PRODUCTNAME", TextBox2.Text)
+            cmd.Parameters.AddWithValue("@PRODUCTPRICE", TextBox3.Text)
+            cmd.Parameters.AddWithValue("@PRODUCTSTOCK", TextBox4.Text)
+            cmd.Parameters.AddWithValue("@PRODUCTID", TextBox1.Text)
+            Dim result As Integer = cmd.ExecuteNonQuery()
+            If result > 0 Then
+                MessageBox.Show("Product updated successfully.")
+                dataLoad()
+            Else
+                MessageBox.Show("Update failed.")
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error: " & ex.Message)
+        Finally
+            conn.Close()
+        End Try
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
