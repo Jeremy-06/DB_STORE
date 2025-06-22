@@ -101,6 +101,29 @@ Public Class Form1
     End Sub
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
-
+        Try
+            conn.Open()
+            query = "SELECT * FROM RONSTORE WHERE PRODUCTNAME LIKE @PRODUCTNAME"
+            cmd = New SqlCommand(query, conn)
+            cmd.Parameters.AddWithValue("@PRODUCTNAME", "%" & TextBox2.Text & "%")
+            dt.Clear()
+            da = New SqlDataAdapter(cmd)
+            da.Fill(dt)
+            DataGridView1.DataSource = dt
+            If dt.Rows.Count > 0 Then
+                TextBox1.Text = dt.Rows(0)("PRODUCTID").ToString()
+                TextBox3.Text = dt.Rows(0)("PRODUCTPRICE").ToString()
+                TextBox4.Text = dt.Rows(0)("PRODUCTSTOCK").ToString()
+            Else
+                MessageBox.Show("No product found with that name.")
+                TextBox1.Clear()
+                TextBox3.Clear()
+                TextBox4.Clear()
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error: " & ex.Message)
+        Finally
+            conn.Close()
+        End Try
     End Sub
 End Class
