@@ -79,7 +79,27 @@ Public Class Form1
     End Sub
 
     Private Sub Button3_Click(sender As Object, e As EventArgs) Handles Button3.Click
-
+        Try
+            conn.Open()
+            query = "DELETE FROM RONSTORE WHERE PRODUCTID = @PRODUCTID"
+            cmd = New SqlCommand(query, conn)
+            cmd.Parameters.AddWithValue("@PRODUCTID", TextBox1.Text)
+            Dim result As Integer = cmd.ExecuteNonQuery()
+            If result > 0 Then
+                If MessageBox.Show("Are you sure you want to delete this product?", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    MessageBox.Show("Product deleted successfully.")
+                    dataLoad()
+                Else
+                    MessageBox.Show("Delete failed.")
+                End If
+            Else
+                MessageBox.Show("Delete failed.")
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error: " & ex.Message)
+        Finally
+            conn.Close()
+        End Try
     End Sub
 
     Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
